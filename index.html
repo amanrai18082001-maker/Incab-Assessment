@@ -637,17 +637,25 @@ async function handleSubmit() {
   var brakingData = collectAssess("brakingQuestions",  BRAKING_EN);
   Object.assign(data, distData, scanData, brakingData);
 
- fetch(
+fetch(
   "https://script.google.com/macros/s/AKfycbzTfj8hbLLC05vNzFSdBkvynP5eWvuLUO7E6mv4BKVD-pdCNK540STRSMagXm4idOoRGQ/exec",
   {
     method: "POST",
+    mode: "no-cors",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "text/plain"
     },
     body: JSON.stringify(data)
   }
 )
-.then(response => response.json())
+.then(() => {
+    showSuccessPopup();
+})
+.catch(error => {
+    btn.disabled = false;
+    btn.innerText = UI[currentLang].submitBtn;
+    alert("Error : " + error);
+});
 .then(result => {
 
   if(result.success){
