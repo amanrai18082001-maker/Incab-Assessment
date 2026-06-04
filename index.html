@@ -1,1 +1,666 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700;800&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #1a56db; --primary-dark: #1340b0; --primary-light: #ebf0ff;
+      --accent: #0ea5e9; --success: #16a34a; --success-light: #dcfce7;
+      --danger: #dc2626; --warning: #f59e0b; --bg: #f0f4ff; --card: #ffffff;
+      --text: #1e293b; --text-muted: #64748b; --border: #e2e8f0;
+      --radius: 14px; --radius-sm: 8px;
+      --shadow: 0 2px 12px rgba(26,86,219,0.10);
+    }
+    html, body {
+      width:100% !important; max-width:100% !important; min-width:0 !important;
+      overflow-x:hidden !important; margin:0 !important; padding:0 !important;
+      -webkit-text-size-adjust:100%; text-size-adjust:100%;
+    }
+    body {
+      font-family:'Nunito','Noto Sans Devanagari',sans-serif;
+      background:var(--bg); min-height:100vh; color:var(--text);
+      font-size:16px; line-height:1.5;
+    }
 
+    .lang-screen {
+      min-height:100vh; display:flex; flex-direction:column;
+      align-items:center; justify-content:center; padding:32px 20px;
+      background:linear-gradient(145deg,#1a56db 0%,#0ea5e9 100%);
+    }
+    .lang-logo { width:90px; height:90px; background:rgba(255,255,255,0.2);
+      border-radius:24px; display:flex; align-items:center; justify-content:center;
+      margin-bottom:24px; font-size:46px; }
+    .lang-screen h1 { color:#fff; font-size:26px; font-weight:800; text-align:center; margin-bottom:8px; }
+    .lang-screen p  { color:rgba(255,255,255,0.85); font-size:15px; margin-bottom:36px; text-align:center; }
+    .lang-subtitle  { color:rgba(255,255,255,0.7); font-size:13px; margin-bottom:32px; text-align:center; }
+    .lang-btns { display:flex; flex-direction:column; gap:14px; width:100%; max-width:320px; }
+    .lang-btn {
+      padding:20px 32px; border:none; border-radius:var(--radius);
+      font-size:18px; font-weight:800; cursor:pointer;
+      display:flex; align-items:center; justify-content:center; gap:12px;
+      min-height:64px; transition:transform 0.15s,box-shadow 0.15s;
+      box-shadow:0 4px 20px rgba(0,0,0,0.15);
+    }
+    .lang-btn.en { background:#fff; color:var(--primary); }
+    .lang-btn.hi { background:rgba(255,255,255,0.15); color:#fff; border:2px solid rgba(255,255,255,0.5); }
+    .lang-btn:active { transform:scale(0.97); }
+
+    .container { width:100%; max-width:100%; margin:0; padding:0 0 48px 0; }
+    .form-header {
+      background:linear-gradient(135deg,var(--primary) 0%,var(--accent) 100%);
+      padding:20px 16px 16px; color:#fff; position:sticky; top:0; z-index:10;
+    }
+    .form-header h2 { font-size:20px; font-weight:800; margin-bottom:2px; text-align:center; }
+    .form-header p  { font-size:13px; opacity:0.8; text-align:center; }
+
+    .card {
+      background:var(--card); border-radius:var(--radius);
+      box-shadow:var(--shadow); margin:10px 10px 0; padding:16px 14px;
+    }
+    .section-title {
+      display:flex; align-items:center; gap:10px;
+      padding:14px 16px 12px; margin:10px 10px 0;
+      background:var(--primary); border-radius:var(--radius) var(--radius) 0 0;
+      color:#fff; font-weight:800; font-size:14px; letter-spacing:0.3px;
+    }
+    .section-title + .card { margin-top:0; border-radius:0 0 var(--radius) var(--radius); }
+    .section-title .icon { font-size:18px; }
+
+    .subsection-title {
+      background:#e8f0fe; border-left:4px solid var(--primary);
+      padding:10px 14px; margin:14px 0 2px; border-radius:0 var(--radius-sm) var(--radius-sm) 0;
+      font-weight:800; font-size:13px; color:var(--primary);
+    }
+
+    .field { margin-bottom:16px; }
+    .field:last-child { margin-bottom:0; }
+
+    label {
+      display:block; font-weight:700; font-size:13px; color:var(--text-muted);
+      margin-bottom:8px; text-transform:uppercase; letter-spacing:0.4px;
+    }
+
+    input, select, textarea {
+      width:100%; padding:14px 16px; border:1.5px solid var(--border);
+      border-radius:var(--radius-sm); font-size:16px;
+      font-family:'Nunito','Noto Sans Devanagari',sans-serif;
+      font-weight:600; color:var(--text); background:#f8faff; outline:none;
+      transition:border-color 0.2s,box-shadow 0.2s;
+      -webkit-appearance:none; appearance:none; min-height:52px;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color:var(--primary); background:#fff;
+      box-shadow:0 0 0 3px rgba(26,86,219,0.10);
+    }
+    textarea { height:100px; resize:vertical; min-height:100px; }
+    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .route-row { display:flex; align-items:flex-end; gap:8px; }
+    .route-row .field { flex:1; margin-bottom:0; }
+    .route-arrow { font-size:22px; color:var(--primary); padding-bottom:14px; flex-shrink:0; font-weight:800; }
+
+    select {
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat:no-repeat; background-position:right 14px center; padding-right:40px;
+    }
+
+    .yn-row {
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px; padding:12px 0; border-bottom:1px solid var(--border);
+    }
+    .yn-row:last-child  { border-bottom:none; padding-bottom:0; }
+    .yn-row:first-child { padding-top:0; }
+    .yn-text { font-size:14px; font-weight:600; color:var(--text); flex:1; line-height:1.45; }
+    .yn-btns { display:flex; gap:8px; flex-shrink:0; }
+    .yn-btn {
+      padding:10px 18px; border:1.5px solid var(--border); border-radius:var(--radius-sm);
+      font-size:14px; font-weight:800; font-family:inherit; cursor:pointer;
+      background:#f8faff; color:var(--text-muted); transition:all 0.15s; min-height:44px;
+    }
+    .yn-btn.active-yes { background:#f0fdf4; border-color:#86efac; color:#15803d; }
+    .yn-btn.active-no  { background:#fef2f2; border-color:#fca5a5; color:#dc2626; }
+    .yn-btn:active { transform:scale(0.96); }
+
+    .q-row {
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px; padding:14px 0; border-bottom:1px solid var(--border);
+    }
+    .q-row:last-child  { border-bottom:none; padding-bottom:0; }
+    .q-row:first-child { padding-top:0; }
+    .q-text  { font-size:14px; font-weight:600; color:var(--text); flex:1; line-height:1.45; }
+    .q-select { width:160px; flex-shrink:0; padding:10px 32px 10px 12px; font-size:13px; font-weight:700; min-height:48px; }
+
+    @media (max-width:400px) {
+      .q-row { flex-wrap:wrap; }
+      .q-text { width:100%; flex:none; }
+      .q-select { width:100%; margin-top:6px; }
+      .yn-row { flex-wrap:wrap; }
+      .yn-text { width:100%; }
+      .yn-btns { width:100%; justify-content:flex-start; margin-top:6px; }
+      .route-row { flex-direction:column; align-items:stretch; }
+      .route-arrow { text-align:center; padding-bottom:0; padding-top:4px; }
+      .grid-2 { grid-template-columns:1fr; }
+    }
+
+    .q-select[data-val="Pass"]             { background-color:#f0fdf4; border-color:#86efac; color:#15803d; }
+    .q-select[data-val="Need Improvement"] { background-color:#fffbeb; border-color:#fcd34d; color:#92400e; }
+    .q-select[data-val="Not Seen"]         { background-color:#f8fafc; border-color:#cbd5e1; color:#64748b; }
+
+    canvas {
+      border:2px dashed var(--border); border-radius:var(--radius-sm);
+      width:100%; height:180px; background:#f8faff; display:block; touch-action:none;
+    }
+    .sign-hint { font-size:13px; color:var(--text-muted); text-align:center; margin-top:8px; font-weight:600; }
+    .btn-clear {
+      width:100%; padding:12px; background:transparent; color:var(--text-muted);
+      border:1.5px solid var(--border); border-radius:var(--radius-sm);
+      font-size:15px; font-weight:700; font-family:inherit;
+      cursor:pointer; margin-top:12px; transition:all 0.2s; min-height:48px;
+    }
+    .btn-clear:active { background:#f1f5f9; }
+
+    .btn-submit {
+      width:calc(100% - 20px); margin:20px 10px 0; padding:20px;
+      background:linear-gradient(135deg,var(--primary) 0%,var(--accent) 100%);
+      color:#fff; border:none; border-radius:var(--radius);
+      font-size:18px; font-weight:800; font-family:inherit; cursor:pointer;
+      box-shadow:0 4px 18px rgba(26,86,219,0.30);
+      transition:transform 0.15s,box-shadow 0.15s; min-height:60px;
+    }
+    .btn-submit:active { transform:scale(0.98); }
+    .btn-submit:disabled { opacity:0.6; cursor:not-allowed; }
+
+    .popup-overlay {
+      display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45);
+      z-index:999; align-items:center; justify-content:center; padding:24px;
+    }
+    .popup-overlay.show { display:flex; animation:fadeIn 0.2s ease; }
+    @keyframes fadeIn { from{opacity:0}to{opacity:1} }
+    .popup-card {
+      background:#fff; border-radius:20px; padding:40px 28px; text-align:center;
+      max-width:340px; width:100%; box-shadow:0 20px 60px rgba(0,0,0,0.20);
+      animation:popIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes popIn { from{transform:scale(0.7);opacity:0}to{transform:scale(1);opacity:1} }
+    .popup-icon  { width:80px; height:80px; background:var(--success-light); border-radius:50%;
+      display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:40px; }
+    .popup-title { font-size:22px; font-weight:800; color:var(--success); margin-bottom:8px; }
+    .popup-sub   { font-size:15px; color:var(--text-muted); font-weight:600; }
+  </style>
+</head>
+<body>
+
+<script>
+(function(){
+  try {
+    google.script.run.withSuccessHandler(function(){}).withFailureHandler(function(){});
+    window.onload = function(){
+      try { google.script.host.setWidth(window.screen.width); } catch(e){}
+      try { google.script.host.setHeight(document.body.scrollHeight + 100); } catch(e){}
+    };
+  } catch(e){}
+})();
+</script>
+
+<div class="popup-overlay" id="successPopup">
+  <div class="popup-card">
+    <div class="popup-icon">✅</div>
+    <div class="popup-title" id="popupTitle">Submitted!</div>
+    <div class="popup-sub"   id="popupSub">Form submitted successfully</div>
+  </div>
+</div>
+
+<div id="langScreen">
+  <div class="lang-screen">
+    <div class="lang-logo">
+      <img src="https://drive.google.com/uc?export=view&id=1ZCVxV-k-3T4MwDxnHq0voW_TCV4t-tkP" 
+           style="width:80px;height:80px;object-fit:contain;border-radius:16px;" 
+           onerror="this.parentElement.innerHTML='🚛'">
+    </div>
+
+    <h1>CGM Driver Assessment</h1>
+    <p>ड्राइवर इन कैब असेसमेंट शीट</p>
+    <p class="lang-subtitle">Choose your language / अपनी भाषा चुनें</p>
+    <div class="lang-btns">
+      <button class="lang-btn en" onclick="selectLang('en')"> English</button>
+      <button class="lang-btn hi" onclick="selectLang('hi')"> हिंदी</button>
+    </div>
+  </div>
+</div>
+
+<div id="mainForm" style="display:none;">
+  <div class="form-header">
+    <h2 id="frmTitle">CGM Driver In-Cab Assessment</h2>
+    <p id="frmSubtitle">Fill all sections carefully</p>
+  </div>
+
+  <div class="container">
+
+    <div class="card">
+      <div class="field">
+        <label id="lblDriverName">Driver Name</label>
+        <input type="text" id="driverName" inputmode="text" autocomplete="off">
+      </div>
+      <div class="field">
+        <label id="lblAssessorName">Assessor Name</label>
+        <input type="text" id="assessorName" inputmode="text" autocomplete="off">
+      </div>
+      <div class="field">
+        <label id="lblVehicleNo">Vehicle Number</label>
+        <input type="text" id="vehicleNo" inputmode="text" autocomplete="off">
+      </div>
+      <div class="field">
+        <label id="lblWeather">Weather Condition</label>
+        <input type="text" id="weather" inputmode="text" autocomplete="off">
+      </div>
+      <div class="field">
+        <label id="lblLocation">Location</label>
+        <div class="route-row">
+          <div class="field">
+            <label id="lblFrom" style="font-size:11px;">FROM</label>
+            <input type="text" id="locationFrom" inputmode="text" autocomplete="off">
+          </div>
+          <div class="route-arrow">→</div>
+          <div class="field">
+            <label id="lblTo" style="font-size:11px;">TO</label>
+            <input type="text" id="locationTo" inputmode="text" autocomplete="off">
+          </div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label id="lblStartTime">Start Time</label><input type="time" id="startTime"></div>
+        <div class="field"><label id="lblEndTime">End Time</label><input type="time" id="endTime"></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label id="lblDate">Date</label><input type="date" id="date"></div>
+        <div class="field"><label id="lblEmail">Email</label><input type="email" id="email" inputmode="email" autocomplete="email"></div>
+      </div>
+    </div>
+
+    <div class="section-title"><span class="icon">✅</span><span id="preDriveHeading">Before Starting to Drive</span></div>
+    <div class="card"><div id="preDriveQuestions"></div></div>
+
+    <div class="section-title"><span class="icon">📏</span><span id="distHeading">Distance Keeping Skill</span></div>
+    <div class="card"><div id="distanceQuestions"></div></div>
+
+    <div class="section-title"><span class="icon">👁️</span><span id="scanHeading">360° Road Scanning Skill</span></div>
+    <div class="card"><div id="scanningQuestions"></div></div>
+
+    <div class="section-title"><span class="icon">🛑</span><span id="brakingHeading">Braking Skill</span></div>
+    <div class="card"><div id="brakingQuestions"></div></div>
+
+    <div class="section-title"><span class="icon">💬</span><span id="remarksHeading">Remarks</span></div>
+    <div class="card">
+      <div class="field">
+        <label id="lblHarshBraking">If harsh braking occurred, mention the reason</label>
+        <input type="text" id="harshBraking" inputmode="text" autocomplete="off">
+      </div>
+      <div class="field">
+        <label id="lblHarshAccel">If harsh acceleration occurred, mention the reason</label>
+        <input type="text" id="harshAcceleration" inputmode="text" autocomplete="off">
+      </div>
+      <div class="field">
+        <label id="lblRemarks">Comments / Remarks</label>
+        <textarea id="remarks"></textarea>
+      </div>
+    </div>
+
+    <div class="section-title"><span class="icon">✍️</span><span id="assessorSignHeading">Assessor Signature</span></div>
+    <div class="card">
+      <canvas id="assessorSign"></canvas>
+      <p class="sign-hint" id="assessorSignHint">Sign in the box above</p>
+      <button type="button" class="btn-clear" id="clearAssessorBtn" onclick="clearCanvas('assessorSign')">Clear Signature</button>
+    </div>
+
+    <div class="section-title"><span class="icon">✍️</span><span id="driverSignHeading">Driver Signature</span></div>
+    <div class="card">
+      <canvas id="driverSign"></canvas>
+      <p class="sign-hint" id="driverSignHint">Sign in the box above</p>
+      <button type="button" class="btn-clear" id="clearDriverBtn" onclick="clearCanvas('driverSign')">Clear Signature</button>
+    </div>
+
+    <button class="btn-submit" id="submitBtn" onclick="handleSubmit()">Submit Form</button>
+  </div>
+</div>
+
+<script>
+
+var PRE_DRIVE_EN = [
+  "Vehicle walk-around inspection",
+  "Use three-point contact while climbing or getting down from the truck",
+  "Adjust seat belt properly",
+  "Wear seat belt",
+  "Adjust / check mirrors"
+];
+var DISTANCE_EN = [
+  "Always maintain at least a 4-second following distance",
+  "If another vehicle cuts in ahead, immediately restore a safe distance",
+  "Increase distance by observing tail lights properly",
+  "In bad weather / poor road conditions, increase following distance from 4 to 8 seconds",
+  "Use low-beam headlights on the road",
+  "Use indicators while changing lane",
+  "Reduce speed on rough roads",
+  "Overtake slow-moving vehicles carefully",
+  "Respond properly at intersections or merging traffic",
+  "Reduce gear and speed when going downhill"
+];
+var SCANNING_EN = [
+  "Scan front, rear, and both sides while driving",
+  "Check rear-view and side mirrors while changing lane, braking, stopping or restarting",
+  "Respond properly to hazards ahead or when green light is about to turn red",
+  "Continue 270-degree scanning even when stopping the vehicle",
+  "Reverse with 270-degree scan, helper assistance and looking back"
+];
+var BRAKING_EN = [
+  "Use controlled braking when any potential hazard is ahead or green light is about to turn red",
+  "Use controlled / smooth braking to stop the vehicle in normal braking situations",
+  "Move vehicle to left side when stopping",
+  "Use hazard lights when stopped roadside"
+];
+
+var PRE_DRIVE_HI = [
+  "A. वाहन के चारों ओर घूमना",
+  "B. ट्रक पर चढ़ते या उतरते समय, तीन बिंदु संपर्क नियम का उपयोग करना",
+  "C. सीट बेल्ट को एडजस्ट करना",
+  "D. सीट बेल्ट पहनना",
+  "E. दर्पणों को एडजस्ट करना या / जाँचना"
+];
+var DISTANCE_HI = [
+  "हमेशा कम से कम \"चार-सेकंड\" दूरी बनाए रखना।",
+  "यदि आगे कोई दूसरी कार आगे आ जाती है तो तुरंत सुरक्षित दूरी पर वापस चले जाना।",
+  "टेलगेटर्स (Tail Light) का ध्यान रखते हुए दूरी बढ़ा दी जाना।",
+  "खराब मौसम / सड़क की स्थिति में अगली गाडी से दूरी चार से आठ सेकंड तक बढ़ा दी जाना।",
+  "रोड-वे पर लो-बीम हेडलाइट्स का उपयोग करना।",
+  "लेन बदलते समय इंडिकेटर का उपयोग करना।",
+  "कच्ची सड़कों पर गति कम कर देना।",
+  "\"धीमी गति से चलने वाले वाहन\" को सावधानी के साथ पार करना।",
+  "चौराहों या मर्जिंग ट्रैफिक के पास पहुँचने पर प्रतिक्रिया।",
+  "जब गाड़ी ढलाई में हो तो गियर को कम किया और स्पीड को कितना कम किया।"
+];
+var SCANNING_HI = [
+  "वाहन चलाते समय वाहन के आगे, पीछे और दोनों तरफ स्कैन करना।",
+  "लेन को बदलने या ब्रेक लगाने, वाहन को रोकने या फिर से शुरू करने के दौरान रियर और साइड-व्यू मिरर को चेक करना।",
+  "आगे के खतरों के लिए ब्रेक लगाने या किसी अन्य लेन पर जाने की प्रतिक्रिया करना।",
+  "वाहन को रोकने पर भी 270° स्कैनिंग जारी रखना।",
+  "रिवर्स करते हुए, 270° स्कैन करना और हेल्पर की मदद लेना, पीछे मुड़ के देखना।"
+];
+var BRAKING_HI = [
+  "जब भी कोई संभावित समस्या सामने आए या जब हरी बत्ती खत्म होने वाली हो तो \"अचानक ब्रेक\" का उपयोग करना।",
+  "सामान्य ब्रेकिंग स्थिति में वाहन को रोकने के लिए आराम से ब्रेक लगाना।",
+  "वाहन को रोकने के लिए सड़क के बाईं ओर वाहन ले जाना।",
+  "सड़क किनारे वाहन रोकने पर खतरा लाईटों का इस्तेमाल करना।"
+];
+
+var currentLang = "en";
+var ynValues = {};
+
+var UI = {
+  en: {
+    frmTitle:       "CGM Driver In-Cab Assessment",
+    frmSubtitle:    "Fill all sections carefully",
+    preDriveHead:   "Before Starting to Drive",
+    distHead:       "Distance Keeping Skill",
+    scanHead:       "360° Road Scanning Skill",
+    brakingHead:    "Braking Skill",
+    remarksHead:    "Remarks",
+    assessorSignHead:"Assessor Signature",
+    driverSignHead: "Driver Signature",
+    lblDriver:      "DRIVER NAME",
+    lblAssessor:    "ASSESSOR NAME",
+    lblVehicle:     "VEHICLE NUMBER",
+    lblWeather:     "WEATHER CONDITION",
+    lblLocation:    "LOCATION",
+    lblFrom:        "FROM",
+    lblTo:          "TO",
+    lblStart:       "START TIME",
+    lblEnd:         "END TIME",
+    lblDate:        "DATE",
+    lblEmail:       "EMAIL",
+    lblHarshBrk:    "IF HARSH BRAKING OCCURRED, MENTION THE REASON",
+    lblHarshAcc:    "IF HARSH ACCELERATION OCCURRED, MENTION THE REASON",
+    lblRemarks:     "COMMENTS / REMARKS",
+    signHintD:      "Driver — sign in the box above",
+    signHintA:      "Assessor — sign in the box above",
+    clearSign:      "Clear Signature",
+    submitBtn:      "Submit Form",
+    yesLbl:         "Yes",
+    noLbl:          "No",
+    passOpt:        "Pass",
+    improveOpt:     "Need Improvement",
+    notSeenOpt:     "Not Seen",
+    popupTitle:     "Submitted!",
+    popupSub:       "Assessment submitted successfully"
+  },
+  hi: {
+    frmTitle:       "ड्राइवर इन कैब असेसमेंट शीट",
+    frmSubtitle:    "सभी भाग ध्यान से भरें",
+    preDriveHead:   "ड्राईविंग शुरू करने से पहले",
+    distHead:       "दूरी बनाए रखने का कौशल",
+    scanHead:       "सड़क पर 360° नज़र रखने का कौशल",
+    brakingHead:    "ब्रेक लगाने का कौशल",
+    remarksHead:    "टिप्पणियाँ",
+    assessorSignHead:"परीक्षक का नाम और हस्ताक्षर",
+    driverSignHead: "ड्राईवर का नाम और हस्ताक्षर",
+    lblDriver:      "ड्राईवर का नाम",
+    lblAssessor:    "परीक्षक का नाम",
+    lblVehicle:     "गाड़ी नंबर",
+    lblWeather:     "मौसम की स्थिति",
+    lblLocation:    "स्थान",
+    lblFrom:        "प्रारंभ",
+    lblTo:          "गंतव्य",
+    lblStart:       "प्रारंभ का समय",
+    lblEnd:         "समापन का समय",
+    lblDate:        "दिनांक",
+    lblEmail:       "ईमेल",
+    lblHarshBrk:    "अगर हार्ष ब्रेकिंग हुआ है तो क्यों (कारण बताये)",
+    lblHarshAcc:    "अगर हार्ष अक्सेलरेशन हुआ है तो क्यों (कारण बताये)",
+    lblRemarks:     "टिप्पणियाँ",
+    signHintD:      "ड्राईवर — ऊपर बॉक्स में हस्ताक्षर करें",
+    signHintA:      "परीक्षक — ऊपर बॉक्स में हस्ताक्षर करें",
+    clearSign:      "हस्ताक्षर मिटाएं",
+    submitBtn:      "फ़ॉर्म जमा करें",
+    yesLbl:         "हाँ",
+    noLbl:          "नहीं",
+    passOpt:        "सकारात्मक व्यवहार",
+    improveOpt:     "सुधार की जरूरत",
+    notSeenOpt:     "नहीं देखा गया",
+    popupTitle:     "जमा हो गया!",
+    popupSub:       "असेसमेंट सफलतापूर्वक जमा किया गया"
+  }
+};
+
+function selectLang(lang) {
+  currentLang = lang;
+  document.getElementById("langScreen").style.display = "none";
+  document.getElementById("mainForm").style.display   = "block";
+  applyLabels(lang);
+  loadQuestions(lang);
+  setTimeout(function(){ initSignaturePad("driverSign"); initSignaturePad("assessorSign"); }, 300);
+}
+
+function applyLabels(lang) {
+  var u = UI[lang];
+  document.getElementById("frmTitle").innerText         = u.frmTitle;
+  document.getElementById("frmSubtitle").innerText      = u.frmSubtitle;
+  document.getElementById("preDriveHeading").innerText  = u.preDriveHead;
+  document.getElementById("distHeading").innerText      = u.distHead;
+  document.getElementById("scanHeading").innerText      = u.scanHead;
+  document.getElementById("brakingHeading").innerText   = u.brakingHead;
+  document.getElementById("remarksHeading").innerText   = u.remarksHead;
+  document.getElementById("assessorSignHeading").innerText = u.assessorSignHead;
+  document.getElementById("driverSignHeading").innerText   = u.driverSignHead;
+  document.getElementById("lblDriverName").innerText    = u.lblDriver;
+  document.getElementById("lblAssessorName").innerText  = u.lblAssessor;
+  document.getElementById("lblVehicleNo").innerText     = u.lblVehicle;
+  document.getElementById("lblWeather").innerText       = u.lblWeather;
+  document.getElementById("lblLocation").innerText      = u.lblLocation;
+  document.getElementById("lblFrom").innerText          = u.lblFrom;
+  document.getElementById("lblTo").innerText            = u.lblTo;
+  document.getElementById("lblStartTime").innerText     = u.lblStart;
+  document.getElementById("lblEndTime").innerText       = u.lblEnd;
+  document.getElementById("lblDate").innerText          = u.lblDate;
+  document.getElementById("lblEmail").innerText         = u.lblEmail;
+  document.getElementById("lblHarshBraking").innerText  = u.lblHarshBrk;
+  document.getElementById("lblHarshAccel").innerText    = u.lblHarshAcc;
+  document.getElementById("lblRemarks").innerText       = u.lblRemarks;
+  document.getElementById("driverSignHint").innerText   = u.signHintD;
+  document.getElementById("assessorSignHint").innerText = u.signHintA;
+  document.getElementById("clearDriverBtn").innerText   = u.clearSign;
+  document.getElementById("clearAssessorBtn").innerText = u.clearSign;
+  document.getElementById("submitBtn").innerText        = u.submitBtn;
+}
+
+function loadQuestions(lang) {
+  var u      = UI[lang];
+  var isHi   = (lang === "hi");
+
+  var pfDiv = document.getElementById("preDriveQuestions");
+  pfDiv.innerHTML = "";
+  var labels = isHi ? PRE_DRIVE_HI : PRE_DRIVE_EN.map(function(q,i){ return ["A","B","C","D","E"][i] + ". " + q; });
+  PRE_DRIVE_EN.forEach(function(key, i) {
+    ynValues[key] = "";
+    pfDiv.innerHTML += '<div class="yn-row" id="ynrow_' + i + '">'
+      + '<span class="yn-text">' + labels[i] + '</span>'
+      + '<div class="yn-btns">'
+      + '<button type="button" class="yn-btn" id="yn_yes_' + i + '" onclick="setYN(' + i + ',\'yes\')">' + u.yesLbl + '</button>'
+      + '<button type="button" class="yn-btn" id="yn_no_'  + i + '" onclick="setYN(' + i + ',\'no\')">'  + u.noLbl  + '</button>'
+      + '</div></div>';
+  });
+
+  function buildAssessRows(containerId, enKeys, displayLabels) {
+    var div = document.getElementById(containerId);
+    div.innerHTML = "";
+    enKeys.forEach(function(key, i) {
+      div.innerHTML += '<div class="q-row">'
+        + '<span class="q-text">' + displayLabels[i] + '</span>'
+        + '<select class="q-select" id="as_' + containerId + '_' + i + '" onchange="colorSelect(this)">'
+        + '<option value="Pass">' + u.passOpt + '</option>'
+        + '<option value="Need Improvement">' + u.improveOpt + '</option>'
+        + '<option value="Not Seen">' + u.notSeenOpt + '</option>'
+        + '</select></div>';
+    });
+    document.querySelectorAll('#' + containerId + ' .q-select').forEach(colorSelect);
+  }
+
+  buildAssessRows("distanceQuestions", DISTANCE_EN, isHi ? DISTANCE_HI : DISTANCE_EN);
+  buildAssessRows("scanningQuestions", SCANNING_EN, isHi ? SCANNING_HI : SCANNING_EN);
+  buildAssessRows("brakingQuestions",  BRAKING_EN,  isHi ? BRAKING_HI  : BRAKING_EN);
+}
+
+function setYN(idx, val) {
+  var key = PRE_DRIVE_EN[idx];
+  ynValues[key] = (val === "yes") ? "Yes" : "No";
+  var yBtn = document.getElementById("yn_yes_" + idx);
+  var nBtn = document.getElementById("yn_no_"  + idx);
+  yBtn.className = "yn-btn" + (val === "yes" ? " active-yes" : "");
+  nBtn.className = "yn-btn" + (val === "no"  ? " active-no"  : "");
+}
+
+function colorSelect(el){ el.dataset.val = el.value; }
+
+function initSignaturePad(id) {
+  var canvas = document.getElementById(id);
+  var ctx    = canvas.getContext("2d");
+  var ratio  = Math.max(window.devicePixelRatio || 1, 1);
+  canvas.width  = canvas.offsetWidth  * ratio;
+  canvas.height = canvas.offsetHeight * ratio;
+  ctx.scale(ratio, ratio);
+  ctx.strokeStyle = "#000"; ctx.lineWidth = 2.5; ctx.lineCap = "round"; ctx.lineJoin = "round";
+  var drawing = false, lastX = 0, lastY = 0;
+  function getXY(e) {
+    var r = canvas.getBoundingClientRect();
+    if (e.touches && e.touches.length > 0)
+      return { x: e.touches[0].clientX - r.left, y: e.touches[0].clientY - r.top };
+    return { x: e.clientX - r.left, y: e.clientY - r.top };
+  }
+  function startDraw(e) { drawing = true; var p = getXY(e); lastX = p.x; lastY = p.y; e.preventDefault(); }
+  function draw(e) {
+    if (!drawing) return;
+    var p = getXY(e);
+    ctx.beginPath(); ctx.moveTo(lastX, lastY); ctx.lineTo(p.x, p.y); ctx.stroke();
+    lastX = p.x; lastY = p.y; e.preventDefault();
+  }
+  function stopDraw() { drawing = false; }
+  canvas.addEventListener("mousedown",  startDraw);
+  canvas.addEventListener("mousemove",  draw);
+  canvas.addEventListener("mouseup",    stopDraw);
+  canvas.addEventListener("mouseleave", stopDraw);
+  canvas.addEventListener("touchstart", startDraw, { passive: false });
+  canvas.addEventListener("touchmove",  draw,       { passive: false });
+  canvas.addEventListener("touchend",   stopDraw);
+}
+
+function clearCanvas(id) {
+  var c = document.getElementById(id);
+  c.getContext("2d").clearRect(0, 0, c.width, c.height);
+}
+
+function collectAssess(containerId, enKeys) {
+  var result = {};
+  enKeys.forEach(function(key, i) {
+    var el = document.getElementById("as_" + containerId + "_" + i);
+    result[key] = el ? el.value : "";
+  });
+  return result;
+}
+
+async function handleSubmit() {
+  var btn = document.getElementById("submitBtn");
+  btn.disabled  = true;
+  btn.innerText = "⏳ " + (currentLang === "hi" ? "जमा हो रहा है..." : "Submitting...");
+
+  var data = {
+    lang:             currentLang,
+    driverName:       document.getElementById("driverName").value,
+    assessorName:     document.getElementById("assessorName").value,
+    vehicleNo:        document.getElementById("vehicleNo").value,
+    weather:          document.getElementById("weather").value,
+    locationFrom:     document.getElementById("locationFrom").value,
+    locationTo:       document.getElementById("locationTo").value,
+    startTime:        document.getElementById("startTime").value,
+    endTime:          document.getElementById("endTime").value,
+    date:             document.getElementById("date").value,
+    email:            document.getElementById("email").value,
+    harshBraking:     document.getElementById("harshBraking").value,
+    harshAcceleration:document.getElementById("harshAcceleration").value,
+    remarks:          document.getElementById("remarks").value,
+    driverSignature:  document.getElementById("driverSign").toDataURL(),
+    assessorSignature:document.getElementById("assessorSign").toDataURL()
+  };
+
+  PRE_DRIVE_EN.forEach(function(key) { data[key] = ynValues[key] || ""; });
+
+  var distData    = collectAssess("distanceQuestions", DISTANCE_EN);
+  var scanData    = collectAssess("scanningQuestions", SCANNING_EN);
+  var brakingData = collectAssess("brakingQuestions",  BRAKING_EN);
+  Object.assign(data, distData, scanData, brakingData);
+
+  if (typeof google !== "undefined" && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(showSuccessPopup)
+      .withFailureHandler(function(e) {
+        btn.disabled  = false;
+        btn.innerText = UI[currentLang].submitBtn;
+        alert("Error: " + (e.message || e));
+      })
+      .submitForm(JSON.stringify(data));
+  } else {
+    showSuccessPopup();
+  }
+}
+
+function showSuccessPopup() {
+  var u = UI[currentLang];
+  document.getElementById("popupTitle").innerText = u.popupTitle;
+  document.getElementById("popupSub").innerText   = u.popupSub;
+  document.getElementById("successPopup").classList.add("show");
+  setTimeout(function() {
+    document.getElementById("successPopup").classList.remove("show");
+    location.reload();
+  }, 2800);
+}
+</script>
+</body>
+</html>
