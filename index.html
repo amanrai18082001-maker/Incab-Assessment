@@ -637,18 +637,41 @@ async function handleSubmit() {
   var brakingData = collectAssess("brakingQuestions",  BRAKING_EN);
   Object.assign(data, distData, scanData, brakingData);
 
-  if (typeof google !== "undefined" && google.script && google.script.run) {
-    google.script.run
-      .withSuccessHandler(showSuccessPopup)
-      .withFailureHandler(function(e) {
-        btn.disabled  = false;
-        btn.innerText = UI[currentLang].submitBtn;
-        alert("Error: " + (e.message || e));
-      })
-      .submitForm(JSON.stringify(data));
-  } else {
-    showSuccessPopup();
+ fetch(
+  "https://script.google.com/macros/s/AKfycbzTfj8hbLLC05vNzFSdBkvynP5eWvuLUO7E6mv4BKVD-pdCNK540STRSMagXm4idOoRGQ/exec",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
   }
+)
+.then(response => response.json())
+.then(result => {
+
+  if(result.success){
+
+    showSuccessPopup();
+
+  } else {
+
+    btn.disabled = false;
+    btn.innerText = UI[currentLang].submitBtn;
+
+    alert("Error : " + result.error);
+
+  }
+
+})
+.catch(error => {
+
+  btn.disabled = false;
+  btn.innerText = UI[currentLang].submitBtn;
+
+  alert("Error : " + error);
+
+});
 }
 
 function showSuccessPopup() {
